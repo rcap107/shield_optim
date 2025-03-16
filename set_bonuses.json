@@ -1,0 +1,45 @@
+{
+    "Profane": {
+        "3": {
+           "crit": 85
+        },
+        "5": {
+            "hp": 12451
+        },
+        "8": {
+            "debuff_resistance": 258
+        }
+    },
+    "Forgotten Brighstone": {
+        "3": {
+            "accuracy": 77            
+        },
+        "5": {
+            "crit": 177
+        },
+        "8": {
+            "piercing": 187,
+            "block": 106
+        }
+    },
+
+    "Kaari": {
+        "3": {
+            "cdmg": 76            
+        },
+        "5": {
+            "hp": 9682
+        }
+    },
+    "Safiji": {
+        "3": {
+            "accuracy": 73        
+        },
+        "5": {
+            "defense": 290
+        },
+        "8": {
+            "debuff_resistance": 310
+        }
+    }
+}

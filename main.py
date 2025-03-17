@@ -11,6 +11,7 @@
 # %%
 import numpy as np
 import json
+import polars as pl
 
 SET_BONUSES = json.load(open("set_bonuses.json"))
 
@@ -42,6 +43,22 @@ _external = [
 ]
 
 MAPPING_NAMES = dict(zip(_external, _internal))
+
+base_stats = {
+    
+        "hp" :0,
+        'accuracy' :0,
+        "crit" :0,
+        "cdmg" :0, 
+        "crit_defense" :0,
+        "cdmg_defense" :0,
+        "piercing" :0,
+        "block" :0,
+        "evasion" :0,
+        "defense" :0,
+        "health_regen" :0,
+        "debuff_resistance" :0,
+}
 
 
 # %%
@@ -84,9 +101,6 @@ class Combination:
                     for stat, value in bonus.items():
                         setattr(self, stat, getattr(self, stat)+value)
             
-            # self.crit += sum(
-            #     bonus for n, bonus in current_bonus.items() if n < pieces_current_set
-            # )
 
     def check_validity(self):
         """This function checks whether the given configuration satisfies certain
@@ -167,7 +181,6 @@ def generate_combinations(pieces, comb, slot, all_combinations):
 
 
 # %% Time to load my own shield pieces and see if RAM explodes
-import polars as pl
 
 df = pl.read_csv("shield-data.csv")
 df = df.with_columns(

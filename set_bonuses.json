@@ -10,7 +10,7 @@
             "debuff_resistance": 258
         }
     },
-    "Forgotten Brighstone": {
+    "Forgotten Brightstone": {
         "3": {
             "accuracy": 77            
         },
@@ -40,6 +40,18 @@
         },
         "8": {
             "debuff_resistance": 310
+        }
+    },
+    "Sacrifice": {
+        "3": {
+            "crit": 56
+        }, 
+        "5": {
+            "evasion": 71
+        },
+        "8": {
+            "cdmg": 147,
+            "piercing": 68
         }
     }
 }

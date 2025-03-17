@@ -12,7 +12,7 @@
 import numpy as np
 import json
 
-set_bonuses = json.load(open("set_bonuses.json"))
+SET_BONUSES = json.load(open("set_bonuses.json"))
 
 _internal = [
     "hp",
@@ -53,32 +53,44 @@ class Combination:
         self.cdmg = 0
         self.crit_defense = 0
         self.cdmg_defense = 0
-        self.piecing = 0
+        self.piercing = 0
         self.block = 0
         self.evasion = 0
         self.defense = 0
         self.health_regen = 0
+        self.debuff_resistance = 0
 
         self.shield_sets = {}
         for p in pieces:
             for attribute, value in vars(self).items():
                 if hasattr(p, attribute):
-                    setattr(self, attribute, getattr(p, attribute))
+                    setattr(
+                        self,
+                        attribute,
+                        getattr(self, attribute) + getattr(p, attribute),
+                    )
 
             if p.shield_set in self.shield_sets:
                 self.shield_sets[p.shield_set] += 1
             else:
                 self.shield_sets[p.shield_set] = 1
 
-        # for set_name, pieces_current_set in self.shield_sets.items():
-        #     current_bonus = set_bonuses[set_name]
-        #     self.crit += sum(
-        #         bonus for n, bonus in current_bonus.items() if n < pieces_current_set
-        #     )
+        for set_name, pieces_current_set in self.shield_sets.items():
+            current_bonus = SET_BONUSES[set_name]
+            
+            for t, bonus in current_bonus.items():
+                tier = int(t)
+                if pieces_current_set >= tier:
+                    for stat, value in bonus.items():
+                        setattr(self, stat, getattr(self, stat)+value)
+            
+            # self.crit += sum(
+            #     bonus for n, bonus in current_bonus.items() if n < pieces_current_set
+            # )
 
     def check_validity(self):
         """This function checks whether the given configuration satisfies certain
-        constraints. If it does, it returns itself, otherwise it returns None. 
+        constraints. If it does, it returns itself, otherwise it returns None.
         """
         if any(v for v in self.shield_sets.values() if v not in [3, 5, 8]):
             return None
@@ -87,7 +99,7 @@ class Combination:
         return self
 
     def __repr__(self):
-        return f"Crit: {self.crit} HP: {self.hp} Shield sets: {self.shield_sets}"
+        return f"Crit: {self.crit} HP: {self.hp} Crit dmg: {self.cdmg} Accuracy: {self.accuracy} Shield sets: {self.shield_sets}"
 
     def write_on_file(self):
         s = f"{self.crit},{self.hp}"
@@ -112,12 +124,13 @@ class Piece:
         block,
         evasion,
         defense,
-        health_regen,idx
+        health_regen,
+        idx,
     ):
 
         self.shield_set = shield_set
         self.slot = slot
-        
+
         self.hp = hp
         self.crit = crit
         self.accuracy = accuracy
@@ -170,14 +183,14 @@ for idx, row in enumerate(df.rows()):
     slot = row[1]
     vals = list(row) + [idx]
     this_piece = Piece(*vals)
-    pieces[slot-1].append(this_piece)
+    pieces[slot - 1].append(this_piece)
     pieces_by_index[idx] = this_piece
 # %%
 
 all_combinations = []
 res = generate_combinations(pieces, [], 0, all_combinations)
 len(res)
-# %%
-
-best_combinations = sorted(res, reverse=True, key=lambda x: x.crit)[:10]
+#%%
+best_combinations = sorted(res, reverse=True, key=lambda x: x.cdmg)[:10]
+vars(best_combinations[0])
 # %%
